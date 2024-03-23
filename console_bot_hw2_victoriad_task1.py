@@ -2,10 +2,13 @@ def input_error(func):
     def inner(*args, **kwargs):
         try:
             return func(*args, **kwargs)
+        #ValueError used in cases when the user enters add, but not name and phone number, or only one of them
         except ValueError:
-            return "Give me name and phone number that you want to add please."
+            return "Please give me both name and phone number."
+        #KeyError used when the user asks for a phone number of a contact not added to the cotacts
         except KeyError:
             return "Contact not found for the requested name"
+        #IndexError used when there are not enough arguments
         except IndexError:
             return "Please enter more arguments"
 
@@ -19,19 +22,30 @@ def parse_input(user_input):
 
 @input_error
 def add_contact(args, contacts):
+    #if the user introduces command "add" but not both name and phone number
+    if len(args) != 2:
+        raise ValueError("Please enter both name and phone to add the contact")
     name, phone = args
     contacts[name] = phone
     return "Contact added."
 
 @input_error
 def update_contact(args, contacts):
+    #if the user introduces command "add" but not both name and phone number
+    if len(args) != 2:
+        raise ValueError("Please enter both name and phone to add the contact.")
     name, phone = args
+    if name not in contacts:
+        raise KeyError("Contact not found for the requested name.")
     contacts[name] = phone
     return "Contact updated."
 
 @input_error
 def show_phone(args, contacts):
-        return contacts[args[0]]
+    name = args[0]
+    if name not in contacts:
+        raise KeyError("Contact not found for the requested name.")
+    return contacts[name]
 
 @input_error
 def show_all(contacts):
